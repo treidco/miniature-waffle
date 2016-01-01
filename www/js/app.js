@@ -19,6 +19,18 @@ var Core = ( function(window, undefined) {
         "markdown"
     ];
 
+    //Registered Modules
+    var registeredModules = [];
+
+    function register(name, module){
+        console.log("Registering: " + name);
+        registeredModules.push(module);
+    }
+
+    function getRegisteredModules(){
+        return registeredModules;
+    }
+
     //loads a js script from the provided path
     function loadScript(path){
         var script = document.createElement(TAG_SCRIPT);
@@ -27,24 +39,32 @@ var Core = ( function(window, undefined) {
     }
 
     function init(){
-        //load defined libraries
-        libraries.forEach(function(library) {
-            loadScript(LIB_PATH + library + JS_SUFFIX);
+        console.log("Core: init()");
+        registeredModules.forEach(function(module){
+            if(module.hasOwnProperty("init")){
+                module.init();
+            }
         });
-
-        //load defined modules
-        modules.forEach(function(module) {
-            loadScript(MODULE_PATH + module + JS_SUFFIX);
-        });
-
-        Renderer.initRenderer();
 
     }
 
+    //load defined libraries
+    libraries.forEach(function(library) {
+        console.trace("Registering Libraries");
+        loadScript(LIB_PATH + library + JS_SUFFIX);
+    });
 
+    //load defined modules
+    modules.forEach(function(module) {
+        console.trace("Registering Modules");
+        loadScript(MODULE_PATH + module + JS_SUFFIX);
+    });
 
+    console.log("Exposing named functions");
     return {
-        initApp: init
+        initApp: init,
+        register: register,
+        registeredModules: getRegisteredModules
     };
 
 })(window);

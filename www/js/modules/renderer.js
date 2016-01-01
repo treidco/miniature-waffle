@@ -8,7 +8,7 @@ var Renderer = ( function(window, undefined) {
 
     //list md to import, could be improved no doubt
     var files = [
-        "test"
+        "intro"
     ];
 
     var md = {};
@@ -33,9 +33,19 @@ var Renderer = ( function(window, undefined) {
     }
 
     function init(){
-        var content = getItem("test");
+        console.log("Renderer: init()");
+        var content = getItem("intro");
         var contentElement = document.getElementById("content");
+
+        files.forEach(function(file){
+            var element = document.createElement("div");
+            element.id = file;
+            contentElement.appendChild(element);
+        });
+
         contentElement.innerHTML = content;
+
+        Core.register("renderer", this);
     }
 
 
@@ -52,10 +62,12 @@ var Renderer = ( function(window, undefined) {
         }
     }
 
+
     return {
         titles: getTitles,
         item: getItem,
-        initRenderer: init
+        init: init
     };
 
 })(window);
+Core.register("renderer", Renderer);
